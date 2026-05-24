@@ -376,33 +376,66 @@
                 </div>
                 
                 <div class="lg:col-span-7 glass-panel bg-brand-card p-8 md:p-10 rounded-2xl hover:border-brand-cyan/20" data-aos="fade-left">
-                    <form action="https://api.web3forms.com/submit" method="POST" class="space-y-6">
-    <input type="hidden" name="access_key" value="f7db611c-9714-440f-b231-bf54d65dc9de">
-    <input type="hidden" name="subject" value="New Portfolio Message from PrinceKumar.dev">
-    <input type="hidden" name="redirect" value="https://your-vercel-domain.vercel.app">
-
+                    <form id="portfolioContactForm" class="space-y-6">
+    <div id="formStatusAlert" class="hidden text-xs font-mono p-3 rounded border border-brand-cyan/20 bg-brand-cyan/5 text-brand-cyan mb-4"></div>
+    
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>
             <label class="text-[9px] uppercase font-black tracking-widest text-brand-muted block mb-2">Your Name</label>
-            <input type="text" name="name" required placeholder="User Name" class="w-full bg-brand-black border border-white/5 focus:border-brand-cyan rounded p-3 text-sm text-white outline-none transition-colors duration-300">
+            <input type="text" id="formName" required placeholder="User Name" class="w-full bg-brand-black border border-white/5 focus:border-brand-cyan rounded p-3 text-sm text-white outline-none transition-colors duration-300">
         </div>
         <div>
             <label class="text-[9px] uppercase font-black tracking-widest text-brand-muted block mb-2">Return Address</label>
-            <input type="email" name="email" required placeholder="client@domain.com" class="w-full bg-brand-black border border-white/5 focus:border-brand-cyan rounded p-3 text-sm text-white outline-none transition-colors duration-300">
+            <input type="email" id="formEmail" required placeholder="client@domain.com" class="w-full bg-brand-black border border-white/5 focus:border-brand-cyan rounded p-3 text-sm text-white outline-none transition-colors duration-300">
         </div>
     </div>
     <div>
         <label class="text-[9px] uppercase font-black tracking-widest text-brand-muted block mb-2">Message Subject</label>
-        <input type="text" name="message_subject" required placeholder="Subject Line" class="w-full bg-brand-black border border-white/5 focus:border-brand-cyan rounded p-3 text-sm text-white outline-none transition-colors duration-300">
+        <input type="text" id="formSubject" required placeholder="Subject Line" class="w-full bg-brand-black border border-white/5 focus:border-brand-cyan rounded p-3 text-sm text-white outline-none transition-colors duration-300">
     </div>
     <div>
         <label class="text-[9px] uppercase font-black tracking-widest text-brand-muted block mb-2">Payload Packet Content</label>
-        <textarea rows="5" name="message" required placeholder="Compile data stream message..." class="w-full bg-brand-black border border-white/5 focus:border-brand-cyan rounded p-3 text-sm text-white outline-none transition-colors duration-300 resize-none"></textarea>
+        <textarea rows="5" id="formMessage" required placeholder="Compile data stream message..." class="w-full bg-brand-black border border-white/5 focus:border-brand-cyan rounded p-3 text-sm text-white outline-none transition-colors duration-300 resize-none"></textarea>
     </div>
     <button type="submit" class="w-full bg-brand-cyan hover:bg-brand-cyanHover text-brand-black font-black uppercase tracking-widest text-xs py-4 rounded transition-all duration-300 shadow-lg hover:shadow-brand-cyan/10">
-        Transmit Message <i class="fa-solid fa-paper-plane ml-2"></i>
+        Transmit Message <i class="fa-solid fa-satellite-dish ml-2"></i>
     </button>
 </form>
+
+<script>
+    // Front-end fetch loop to pass data streams to the backend serverless route
+    document.getElementById('portfolioContactForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const alertBox = document.getElementById('formStatusAlert');
+        alertBox.classList.remove('hidden');
+        alertBox.textContent = "Initiating uplink data stream transfer...";
+
+        const payload = {
+            name: document.getElementById('formName').value,
+            email: document.getElementById('formEmail').value,
+            subject: document.getElementById('formSubject').value,
+            message: document.getElementById('formMessage').value
+        };
+
+        try {
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await response.json();
+
+            if (response.ok) {
+                alertBox.textContent = "Transmission confirmed. Entry recorded in MongoDB Atlas database arrays.";
+                document.getElementById('portfolioContactForm').reset();
+            } else {
+                alertBox.textContent = `Uplink rejected: ${data.error}`;
+            }
+        } catch (err) {
+            alertBox.textContent = "Uplink packet loss detected. Ensure project is deployed to a working server.";
+        }
+    });
+</script>
                 </div>
             </div>
         </section>
