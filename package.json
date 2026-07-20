@@ -1,0 +1,10 @@
+{
+  "name": "prince-portfolio",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Portfolio website with contact form storage and email delivery.",
+  "dependencies": {
+    "mongodb": "^6.20.0",
+    "nodemailer": "^6.10.1"
+  }
+}
